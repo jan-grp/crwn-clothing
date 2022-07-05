@@ -17,9 +17,6 @@ const Navigation = () => {
     const handleSignOut = async () => {
         try {
             await signOutUser()
-
-            // unset user in context
-            setCurrentUser(null)
         } catch (err) {
             console.error("error while signing out user: ", err)
         }
