@@ -11,16 +11,30 @@ import App from './App';
 
 // context
 import { UserProvider } from './context/user.context';
-
+import { ProductsProvider } from './context/products.context';
+import { CartProvider } from './context/cart.context'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+
+    {/* routers */}
     <BrowserRouter>
+
+      {/* context providers */}
       <UserProvider>
-        <App />
+        <ProductsProvider>
+          <CartProvider>
+
+            {/* content */}
+            <App />
+
+          </CartProvider>
+        </ProductsProvider>
       </UserProvider>
+
     </BrowserRouter>
+
   </React.StrictMode>
 );
 
