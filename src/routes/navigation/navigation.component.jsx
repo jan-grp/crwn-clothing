@@ -2,8 +2,13 @@ import { Outlet, Link } from "react-router-dom"
 import { Fragment, useContext } from "react"
 
 // styles
-import "./navigation.styles.scss"
 import { ReactComponent as CrwnLogo } from '../../assets/crown.svg'
+import {
+    LogoContainer,
+    NavLink,
+    NavLinksContainer,
+    NavigationContainer
+} from './navigation.styles'
 
 // utils
 import { signOutUser } from '../../utils/firebase/firebase.utils'
@@ -30,37 +35,37 @@ const Navigation = () => {
 
     return(
       <Fragment>
-        <div className="navigation">
-            <Link className="logo-container" to="/">
+        <NavigationContainer>
+            <LogoContainer to="/">
                 <CrwnLogo />
-            </Link>
+            </LogoContainer>
 
-            <div className="nav-links-container">
+            <NavLinksContainer>
                 <Link className="nav-link" to="/shop">
                     SHOP
                 </Link>
 
                 {
                     currentUser ? (
-                        <span 
-                            className="nav-link"
+                        <NavLink 
+                            as="span"
                             onClick={handleSignOut}
                         >
                             SIGN OUT
-                        </span>
+                        </NavLink>
                     ) : (
-                        <Link className="nav-link" to="/authentication">
+                        <NavLink className="nav-link" to="/authentication">
                             SIGN IN
-                        </Link>
+                        </NavLink>
                     )
                 }
 
                 <CartIcon />
 
-            </div>
+            </NavLinksContainer>
 
             {isCartOpen && <CartDropdown />}
-        </div>
+        </NavigationContainer>
         <Outlet />
       </Fragment>
     )

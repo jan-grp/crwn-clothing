@@ -11,7 +11,7 @@ import App from './App';
 
 // context
 import { UserProvider } from './context/user.context';
-import { ProductsProvider } from './context/products.context';
+import { CategoriesProvider } from './context/categories.context';
 import { CartProvider } from './context/cart.context'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -23,14 +23,14 @@ root.render(
 
       {/* context providers */}
       <UserProvider>
-        <ProductsProvider>
+        <CategoriesProvider>
           <CartProvider>
 
             {/* content */}
             <App />
 
           </CartProvider>
-        </ProductsProvider>
+        </CategoriesProvider>
       </UserProvider>
 
     </BrowserRouter>
