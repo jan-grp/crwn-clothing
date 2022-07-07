@@ -1,4 +1,6 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useReducer } from "react";
+
+import { createAction } from '../utils/reducer/reducer.utils'
 
 const addCartItem = (cartItems, productToAdd) => {
     // try to find index of product in items array
@@ -46,36 +48,96 @@ export const CartContext = createContext({
     setIsCartOpen: () => {},
     cartItems: [],
     addItemToCart: () => {},
-    removeItemFromCart: () => {}
+    removeItemFromCart: () => {},
+    clearCartItem: () => {},
+    cartTotalPrice: 0,
 })
 
+export const CART_ACTION_TYPES = {
+    "SET_CART_ITEMS": "SET_CART_ITEMS"
+}
+
+const cartReducer = (state, action) => {
+    const { type, payload } = action;
+  
+    switch (type) {
+        case CART_ACTION_TYPES.SET_CART_ITEMS:
+            return {
+                ...state,
+                ...payload
+            }
+
+        default:
+            throw new Error(`Unhandled type ${type} in cartReducer`);
+    }
+  };
+
+const INITIAL_STATE = {
+    cartItems: [],
+    isCartOpen: false,
+    cartTotalPrice: 0,
+}
+
 export const CartProvider = ({ children }) => {
-    const [isCartOpen, setIsCartOpen] = useState(false)
-    const [cartItems, setCartItems] = useState([])
-    const [cartTotalPrice, setCartTotalPrice] = useState(0)
+    const [{ cartItems, isCartOpen, cartTotalPrice }, dispatch] = useReducer(cartReducer, INITIAL_STATE)
 
-    useEffect(() => {
-        const amount = cartItems.reduce((total, item) => total + item.quantity * item.price, 0)
+    const updateCartItemsReducer = (newCartItems) => {
+        // calc total amount to pay
+        const totalAmount = newCartItems.reduce((total, item) => total + item.quantity * item.price, 0)
 
-        setCartTotalPrice(amount)
-    }, [cartItems])
+        // dispatch({ 
+        //     type: CART_ACTION_TYPES.SET_CART_ITEMS, 
+        //     payload: {
+        //         cartItems: newCartItems,
+        //         cartTotalPrice: totalAmount
+        //     }
+        // })
+
+        dispatch(
+            createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {
+                cartItems: newCartItems,
+                cartTotalPrice: totalAmount
+            })
+        )
+    }
 
     const addItemToCart = (productToAdd) => {
         const newCartItems = addCartItem(cartItems, productToAdd)
 
-        setCartItems(newCartItems)
+        updateCartItemsReducer(newCartItems)
     }
 
     const removeItemFromCart = (product) => {
         const newCartItems = removeCartItem(cartItems, product)
 
-        setCartItems(newCartItems)
+        updateCartItemsReducer(newCartItems)
     }
 
     const clearItemFromCart = (product) => {
         const newCartItems = clearCartItem(cartItems, product)
 
-        setCartItems(newCartItems)
+        updateCartItemsReducer(newCartItems)
+    }
+
+    const setIsCartOpen = (bool) => {
+        if(typeof bool !== "boolean") return Error("function only accepts a boolen as parameter")
+
+        // dispatch({
+        //     type: CART_ACTION_TYPES.SET_CART_ITEMS,
+        //     payload: {
+        //         cartItems,
+        //         cartTotalPrice,
+        //         isCartOpen: bool
+        //     }
+        // })
+
+        dispatch(
+            createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {
+                cartItems,
+                cartTotalPrice,
+                isCartOpen: bool
+            })
+        )
     }
 
     const value = {
