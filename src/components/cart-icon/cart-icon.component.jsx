@@ -1,26 +1,24 @@
-import { useContext, useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 // icon as component
 import { ReactComponent as ShoppingCartIcon } from '../../assets/shopping-bag.svg'
 
-// context
-import { CartContext } from '../../context/cart.context'
+// selectors
+import { selectAmountOfItemsInCart, selectIsCartOpen } from '../../store/cart/cart.selector'
+
+// actions
+import { setCartIsOpen } from '../../store/cart/cart.action'
 
 // styles
 import './cart-icon.styles.scss'
 
 const CartIcon = () => {
-    const [itemCount, setItemCount] = useState(0)
+    const dispatch = useDispatch()
 
-    const { isCartOpen, setIsCartOpen, cartItems } = useContext(CartContext)
+    const isCartOpen = useSelector(selectIsCartOpen)
+    const amountOfItemsInCart = useSelector(selectAmountOfItemsInCart)
 
-    const toggleIsCartOpen = () => setIsCartOpen(!isCartOpen)
-
-    useEffect(() => {
-        let counter = cartItems.reduce((total, item) => total + item.quantity, 0)
-
-        setItemCount(counter)
-    }, [cartItems])
+    const toggleIsCartOpen = () => dispatch(setCartIsOpen(!isCartOpen))
 
     return(
         <div 
@@ -30,7 +28,7 @@ const CartIcon = () => {
             <ShoppingCartIcon
                 className="shopping-icon"
             />
-            <span className='item-count'>{itemCount}</span>
+            <span className='item-count'>{amountOfItemsInCart}</span>
         </div>
     )
 }

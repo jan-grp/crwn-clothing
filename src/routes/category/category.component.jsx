@@ -1,22 +1,24 @@
 import { useParams } from 'react-router-dom'
-import { useContext, useState, useEffect } from 'react'
+import {  useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
-
-// context
-import { CategoriesContext } from '../../context/categories.context'
+// selectors
+import { selectCategoriesMap, selectCategoriesIsLoading } from '../../store/categories/categories.selector'
 
 // component
 import ProductCard from '../../components/product-card/product-card.component'
+import Spinner from '../../components/spinner/spinner'
 
 // styles
 import "./category.styles.scss"
 
 const Category = () => {
-    const { categoriesMap } = useContext(CategoriesContext)
-
     const { category } = useParams()
+    const categoriesMap = useSelector(selectCategoriesMap)
+    const isLoading = useSelector(selectCategoriesIsLoading)
 
     const [products, setProducts] = useState(categoriesMap[category])
+
 
     useEffect(() => {
         setProducts(categoriesMap[category])
@@ -25,16 +27,23 @@ const Category = () => {
     return(
         <>    
             <h2 className='category-titleee'>{category}</h2>
-            <div className='shop-category-container'>
-                { products &&
-                    products.map(product => (
-                        <ProductCard 
-                            key={product.id}
-                            product={product}    
-                        />
-                    ))
-                }
-            </div>
+            {
+                isLoading ? (
+                    <Spinner />
+                ) : (
+                    <div className='shop-category-container'>
+                        { products &&
+                            products.map(product => (
+                                <ProductCard 
+                                    key={product.id}
+                                    product={product}    
+                                />
+                            ))
+                        }
+                    </div>
+                )
+            }
+
         </>
     )
 }

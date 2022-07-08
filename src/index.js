@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 // styles
 import './index.scss';
@@ -9,31 +11,26 @@ import './index.scss';
 // components
 import App from './App';
 
-// context
-import { UserProvider } from './context/user.context';
-import { CategoriesProvider } from './context/categories.context';
-import { CartProvider } from './context/cart.context'
+// global state
+import { store, persistor } from './store/store'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
 
-    {/* routers */}
-    <BrowserRouter>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
 
-      {/* context providers */}
-      <UserProvider>
-        <CategoriesProvider>
-          <CartProvider>
+        {/* routers */}
+        <BrowserRouter>
 
-            {/* content */}
-            <App />
+          {/* content */}
+          <App />
 
-          </CartProvider>
-        </CategoriesProvider>
-      </UserProvider>
+        </BrowserRouter>
 
-    </BrowserRouter>
+      </PersistGate>
+    </Provider>
 
   </React.StrictMode>
 );

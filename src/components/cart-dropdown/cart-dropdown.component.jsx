@@ -1,8 +1,8 @@
-import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
-// context
-import { CartContext } from '../../context/cart.context'
+// selectors
+import { selectCartItems } from '../../store/cart/cart.selector'
 
 // components
 import Button from '../button/button.component'
@@ -12,8 +12,8 @@ import CartItem from '../cart-item/cart-item.component'
 import "./cart-dropdown.styles.scss"
 
 const CartDropdown = () => {
-    const { cartItems } = useContext(CartContext)
-
+    // const { cartItems } = useContext(CartContext)
+    const cartItems = useSelector(selectCartItems)
     
     return(
         <div className="cart-dropdown-container">
