@@ -40,13 +40,41 @@ provider.setCustomParameters({
 })
 
 export const auth = getAuth()
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider)
-export const signInWithGoogleRedirect = () => signInWithGoogleRedirect(auth, provider)
 
 // initialize database
 export const db = getFirestore()
 
-// create user in db
+// add store data collection
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+    const collectionRef = collection(db, collectionKey)
+    const batch = writeBatch(db)
+
+    objectsToAdd.forEach(object => {
+        const docRef = doc(collectionRef, object.title.toLowerCase())
+        batch.set(docRef, object)
+    })
+
+    await batch.commit()
+}
+
+// fetch categories and documents
+export const getCategoriesAndDocuments = async () => {
+    const collectionRef = collection(db, "categories")
+    const q = query(collectionRef)
+
+    const querySnapshot = await getDocs(q)
+
+    return querySnapshot.docs.map(docSnapshot => docSnapshot.data())
+} 
+
+// create user
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+    if(!email) return Error("received no email address")
+    if(!password) return Error("received no password")
+
+    return await createUserWithEmailAndPassword(auth, email, password)
+}
+
 export const createUserDocumentFromAuth = async (
     userAuth, 
     additionalInformation = { displayName: "" }
@@ -75,39 +103,7 @@ export const createUserDocumentFromAuth = async (
         }
     }
 
-    return userDocRef
-}
-
-// add store data collection
-export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
-    const collectionRef = collection(db, collectionKey)
-    const batch = writeBatch(db)
-
-    objectsToAdd.forEach(object => {
-        const docRef = doc(collectionRef, object.title.toLowerCase())
-        batch.set(docRef, object)
-    })
-
-    await batch.commit()
-    console.log("done")
-}
-
-// fetch categories and documents
-export const getCategoriesAndDocuments = async () => {
-    const collectionRef = collection(db, "categories")
-    const q = query(collectionRef)
-
-    const querySnapshot = await getDocs(q)
-
-    return querySnapshot.docs.map(docSnapshot => docSnapshot.data())
-} 
-
-// create user
-export const createAuthUserWithEmailAndPassword = async (email, password) => {
-    if(!email) return Error("received no email address")
-    if(!password) return Error("received no password")
-
-    return await createUserWithEmailAndPassword(auth, email, password)
+    return userSnapshot
 }
 
 // sign in user
@@ -118,6 +114,10 @@ export const signInUserWithEmailAndPassword = async (email, password) => {
     return await signInWithEmailAndPassword(auth, email, password)
 }
 
+export const signInWithGooglePopup = () => signInWithPopup(auth, provider)
+
+export const signInWithGoogleRedirect = () => signInWithGoogleRedirect(auth, provider)
+
 // sign out user
 export const signOutUser = async () => await signOut(auth);
 
@@ -125,4 +125,18 @@ export const signOutUser = async () => await signOut(auth);
 export const onAuthStateChangedListener = (callback) => {
     if(!callback) return Error("auth changes listener needs a callback")
     onAuthStateChanged(auth, callback)
+}
+
+// get current user
+export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(
+            auth,
+            userAuth => {
+                unsubscribe()
+                resolve(userAuth)
+            },
+            reject
+        )
+    })
 }

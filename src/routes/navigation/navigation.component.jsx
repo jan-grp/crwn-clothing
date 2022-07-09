@@ -1,9 +1,9 @@
 import { Outlet, Link } from "react-router-dom"
 import { Fragment } from "react"
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
-// utils
-import { signOutUser } from '../../utils/firebase/firebase.utils'
+// actiosn
+import { signOut } from "../../store/user/user.action"
 
 // selectors
 import { selectCurrentUser } from "../../store/user/user.selector"
@@ -23,18 +23,12 @@ import {
 } from './navigation.styles'
 
 const Navigation = () => {
-    // const { isCartOpen } = useContext(CartContext)
+    const dispatch = useDispatch()
 
     const currentUser = useSelector(selectCurrentUser)
     const isCartOpen = useSelector(selectIsCartOpen)
 
-    const handleSignOut = async () => {
-        try {
-            await signOutUser()
-        } catch (err) {
-            console.error("error while signing out user: ", err)
-        }
-    }
+    const handleSignOut = () => dispatch(signOut())
 
     return(
       <Fragment>

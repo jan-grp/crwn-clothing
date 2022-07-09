@@ -1,10 +1,8 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-// utils 
-import { 
-    signInUserWithEmailAndPassword,
-    signInWithGooglePopup
-} from '../../utils/firebase/firebase.utils'
+// actions
+import { googleSignInStart, emailSignInStart } from '../../store/user/user.action'
 
 // components
 import FormInput from '../form-input/form-input.component'
@@ -19,6 +17,8 @@ const defaultFormFields = {
 }
 
 const SignInForm = () => {
+    const dispatch = useDispatch()
+
     const [formFields, setFormFields] = useState(defaultFormFields)
     const { email, password } = formFields
 
@@ -32,33 +32,16 @@ const SignInForm = () => {
         event.preventDefault()
 
         try {
-            await signInUserWithEmailAndPassword(email, password)
-
+            dispatch(emailSignInStart(email, password))
+            
             // reset form
             setFormFields(defaultFormFields)
-        } catch (err) {
-            switch (err.code) {
-                case "auth/wrong-password":
-                    alert("incorrect password")
-                    break
-                
-                case "auth/user-not-found":
-                    alert("there is no user associated with this email")
-                    break
-
-                default:
-                    console.error("error while signing user in with email and password: ", err)
-            }
+        } catch (error) {
+            console.log('user sign in failed: ', error)
         }
     }
 
-    const handleGoogleSignIn = async () => {
-        try {
-            await signInWithGooglePopup()
-        } catch (err) {
-            console.error("error while signing userin with google popup: ", err)
-        }
-    }
+    const handleGoogleSignIn = () => dispatch(googleSignInStart())
 
     return(
         <div className='sign-up-container'>

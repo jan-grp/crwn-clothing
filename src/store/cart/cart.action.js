@@ -9,7 +9,6 @@ const addCartItem = (cartItems, productToAdd) => {
 
     // product already is in cart -> increase quantity
     if(productIndex >= 0) {
-        console.log("current quantity: ", productToAdd.quantity)
         cartItems[productIndex] = {...productToAdd, quantity: cartItems[productIndex].quantity + 1}
         return [...cartItems]
     }
@@ -49,10 +48,7 @@ const clearCartItem = (cartItems, productToClear) => {
 }
 
 export const addItemToCart = (cartItems, itemToAdd) => {
-    console.log("current cart items: ", cartItems)
-    console.log("item to add: ", itemToAdd)
     const newCartItems = addCartItem(cartItems, itemToAdd)
-    console.log("new cart items: ", newCartItems)
 
     return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems)
 }

@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { 
   onAuthStateChangedListener,
   createUserDocumentFromAuth,
-  // getCategoriesAndDocuments
+  getCurrentUser
 } from './utils/firebase/firebase.utils'
 
 // components
@@ -17,33 +17,14 @@ import Authentication from './routes/authentication/authentication.component.jsx
 import Checkout from './routes/checkout/checkout.component.jsx';
 
 // redux actions
-import { setCurrentUser } from './store/user/user.action'
-// import { setCategories } from './store/categories/categories.action'
+import { checkUserSession } from './store/user/user.action'
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
-      if (user) {
-        createUserDocumentFromAuth(user);
-      }
-
-      dispatch(setCurrentUser(user));
-    });
-
-    return unsubscribe;
-  }, [dispatch]);
-
-//   useEffect(() => {
-//     console.log("effect is running in shop")
-//     const getCategories = async () => {
-//         const categories = await getCategoriesAndDocuments('categories');
-//         dispatch(setCategories(categories));
-//     };
-
-//     getCategories();
-// }, [dispatch]);
+    dispatch(checkUserSession())
+  }, []);
 
   return (
     <Routes>
