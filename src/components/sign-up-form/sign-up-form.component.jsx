@@ -1,12 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-// utils
-import { 
-    createAuthUserWithEmailAndPassword,
-    createUserDocumentFromAuth
-} from '../../utils/firebase/firebase.utils'
-
 // actions
 import {
     emailAndPassowrdSignUpStart

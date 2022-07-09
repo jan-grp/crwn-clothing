@@ -11,15 +11,19 @@ const BUTTON_TYPE_CLASSES = {
 const Button = ({
     children,
     buttonType,
+    isLoading,
     ...otherProps
 }) => {
 
     return(
         <button 
             className={`button-container ${BUTTON_TYPE_CLASSES[buttonType]}`}
+            disabled={isLoading}
             {...otherProps}
         >
-            {children}
+            {
+                isLoading ? <div className="spinner"/> : children
+            }
         </button>
     )
 }

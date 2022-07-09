@@ -4,6 +4,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { Elements } from '@stripe/react-stripe-js'
 
 // styles
 import './index.scss';
@@ -14,6 +15,9 @@ import App from './App';
 // global state
 import { store, persistor } from './store/store'
 
+// utils
+import { stripePromise } from './utils/stripe/stripe.utils';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -21,12 +25,14 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
 
-        {/* routers */}
         <BrowserRouter>
 
-          {/* content */}
-          <App />
+          <Elements stripe={stripePromise}>
 
+            <App />
+
+          </Elements>
+          
         </BrowserRouter>
 
       </PersistGate>
