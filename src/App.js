@@ -3,11 +3,11 @@ import { useEffect } from "react";
 import { useDispatch } from 'react-redux';
 
 // components
-import Navigation from './routes/navigation/navigation.component.jsx'
+import Navigation from './routes/navigation/navigation.component'
 import Home from './routes/home/home.component';
-import Shop from './routes/shop/shop.component.jsx'
-import Authentication from './routes/authentication/authentication.component.jsx';
-import Checkout from './routes/checkout/checkout.component.jsx';
+import Shop from './routes/shop/shop.component'
+import Authentication from './routes/authentication/authentication.component';
+import Checkout from './routes/checkout/checkout.component';
 
 // redux actions
 import { checkUserSession } from './store/user/user.action'
