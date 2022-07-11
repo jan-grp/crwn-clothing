@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { FC } from 'react'
+import { FC, memo } from 'react'
 
 // selectors
 import { selectCartItems } from "../../store/cart/cart.selector"
